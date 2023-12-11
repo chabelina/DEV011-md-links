@@ -17,6 +17,8 @@
     "test": "jest --coverage"
   },
   "dependencies": {
-    "jest": "^29.7.0"
+    "fs": "^0.0.1-security",
+    "jest": "^29.7.0",
+    "path": "^0.12.7"
   }
 }
