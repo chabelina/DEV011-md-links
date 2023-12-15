@@ -8,5 +8,19 @@
     "createdAt": "2023-09-22T12:23:39.903Z",
     "version": "7.1.0",
     "commit": "d257c41694344460623eb1f1bb2a690bdfe33f83"
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --coverage",
+    "test:func": "jest D:/Proyectos/DEV011-md-links/test/functions.spec.js"
+  },
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "jest": "^29.7.0",
+    "markdown-it": "^14.0.0",
+    "path": "^0.12.7"
   }
 }
