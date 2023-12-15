@@ -1,4 +1,4 @@
-const { pathConverter, isRealRoute, isMdFile } = require("./src/functions.js");
+const { pathConverter, isRealRoute, isMdFile, fileReader } = require("./src/functions.js");
 
 const mdLinks = (path) => {
 return new Promise((resolve, reject) => {
@@ -9,8 +9,8 @@ return new Promise((resolve, reject) => {
   const isMD = isMdFile(absolutePath);
 
   if(isFound && isMD){
-    //read md file and search for links
-    
+    //read md file and extract link array
+    fileReader(absolutePath);
 
     //resolve the promise with the object of links
     resolve(absolutePath)

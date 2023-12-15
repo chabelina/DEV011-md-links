@@ -3,7 +3,7 @@ const mdLinks = require('../index.js');
 describe('mdLinks', () => {
 
   it('should return a promise', () => {
-    // console.log(mdLinks("docs/03-milestone.md"));
+    console.log(mdLinks("docs/03-milestone.md"));
     expect(mdLinks("docs/03-milestone.md")).toBeInstanceOf(Promise);
   });
   it('should reject the promise if the path does not exist', () => {
@@ -18,4 +18,5 @@ describe('mdLinks', () => {
     });
   });
 
-})
+});
+
