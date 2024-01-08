@@ -3,6 +3,7 @@ const fs = require('fs');
 const fsPromises = fs.promises;
 const markdownIt = require('markdown-it');
 const md = new markdownIt();
+const axios = require('axios');
 
 const pathConverter = (route) => {
   return path.isAbsolute(route) ? route : path.resolve(route);
@@ -26,8 +27,8 @@ const mdParser = (content) => {
 const fileReader = (validatedPath) => {
   return fsPromises.readFile(validatedPath, {encoding: 'utf8'})
     .then((result) => {
-      const content = result;
-      const parsedFileContent = mdParser(content);
+      const fileContent = result;
+      const parsedFileContent = mdParser(fileContent);
       
       let linkList = []
 
@@ -47,7 +48,6 @@ const fileReader = (validatedPath) => {
           foundLinkData = regex.exec(tokenContent);
         }
       });
-      console.log(linkList);
       return linkList;
     })
     .catch((error) => {
@@ -55,10 +55,46 @@ const fileReader = (validatedPath) => {
     })
 }
 
+const httpStatusValidator = (url) => {
+  return axios.get(url)
+    .then((res) => {
+      let validationData = {};
+      if (res.status >= 200 && res.status < 300){
+        validationData.statCode = res.status;
+        validationData.isOk = 'ok';
+      } else {
+        validationData.statCode = res.status;
+        validationData.isOk = "fail";
+      }
+      // console.log('El valor de data validada es:',validationData);
+      return validationData;
+    })
+    .catch((error) => {
+      throw new Error("Could not validate URL!");
+    })
+}
+
+const statisticsCalculator = (validatedLinksArray) => {
+  let ok = 0;
+  let failed = 0;
+  const totalLinks = validatedLinksArray.length;
+
+  for (let i = 0; i < validatedLinksArray.length; i++) {
+    if (validatedLinksArray[i].isOk === "ok") {
+      ok++;
+    } else {
+      failed++;
+    }
+  }
+  return { totalLinks: totalLinks, okLinks: ok, failedLinks: failed };
+}
+
 module.exports = {
   pathConverter,
   isRealRoute,
   isMdFile,
   fileReader,
-  mdParser
+  mdParser,
+  httpStatusValidator,
+  statisticsCalculator
 };

@@ -18,9 +18,13 @@
     "test:func": "jest D:/Proyectos/DEV011-md-links/test/functions.spec.js"
   },
   "dependencies": {
+    "axios": "^1.6.3",
     "fs": "^0.0.1-security",
     "jest": "^29.7.0",
     "markdown-it": "^14.0.0",
     "path": "^0.12.7"
+  },
+  "bin":{
+    "mdLinks": "./src/cli.js"
   }
 }
