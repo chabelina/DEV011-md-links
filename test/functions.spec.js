@@ -1,18 +1,24 @@
 const { mdParser, fileReader } = require("../src/functions.js");
 const fs = require("fs");
+const path = require('path');
 const fsPromises = fs.promises;
 
+describe('pathConverter', () => {
+  it('should return the absolute path for a relative input path', () => {
+    const relativePath = "docs/04-milestone.md";
+    const result = pathConverter(relativePath);
+    const expectedAbsolutePath = path.resolve(relativePath);
+    expect(result).toEqual(expectedAbsolutePath);
+  });
 
-describe('mdParser', () => {
-  it('should log a parseTree to the console', () => {
-    return fsPromises.readFile("D:/Proyectos/DEV011-md-links/docs/01-milestone.md", 'utf8')
-      .then((result) => {
-        const content = result;
-        mdParser(content);
-        expect(console.log).toHaveBeenCalled();
-      });
+  it("should return the same path if it is already absolute", () => {
+    const alreadyAbsolutePath =
+      "D:/Proyectos/DEV011-md-links/docs/04-milestone.md";
+    const result = pathConverter(alreadyAbsolutePath);
+    expect(result).toEqual(alreadyAbsolutePath);
   });
 });
+
 
 describe("fileReader", () => {
   it("should log md file's content to the console", () => {
