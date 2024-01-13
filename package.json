@@ -1,6 +1,6 @@
 {
   "name": "md-links-chabelina",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "node": ">=16.x"
   },
@@ -14,7 +14,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --coverage",
+    "test": "jest --coverage --verbose",
     "test:func": "jest D:/Proyectos/DEV011-md-links/test/functions.spec.js"
   },
   "dependencies": {
@@ -24,7 +24,7 @@
     "markdown-it": "^14.0.0",
     "path": "^0.12.7"
   },
-  "bin":{
+  "bin": {
     "mdLinks": "./src/cli.js"
   }
 }
