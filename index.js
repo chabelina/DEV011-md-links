@@ -4,18 +4,18 @@ const {
   isMdFile,
   fileReader,
   httpStatusValidator,
-  statisticsCalculator,
+  getStats,
 } = require("./src/functions.js");
 
 const mdLinks = (path, validate, stats) => {
   return new Promise((resolve, reject) => {
-    //check if path is absolute, convert if isn't. return the absolutePath
-    const absolutePath = pathConverter(path);
     //validate if route directory exists in PC and if resulting file is Markdown
-    const isFound = isRealRoute(absolutePath);
-    const isMD = isMdFile(absolutePath);
+    const isFound = isRealRoute(path);
+    const isMD = isMdFile(path);
 
     if (isFound && isMD) {
+      //check if path is absolute, convert if isn't. return the absolutePath
+      const absolutePath = pathConverter(path);
       //read md file and extract link array within resolved promise
       const linkListPromise = fileReader(absolutePath);
 
@@ -26,30 +26,31 @@ const mdLinks = (path, validate, stats) => {
         // const resultArr = []
         linkListArray.forEach((object) => {
           const httpValidationPromises = httpStatusValidator(object.href)
-          .then((res) => res)
-          .catch((error) => error);
-          
+            .then((res) => res)
+            .catch((error) => error);
+
           aux.push(httpValidationPromises);
         });
-        
-        Promise.all(aux)
-        .then((httpValidationResults) => {
-          const statResults = statisticsCalculator(httpValidationResults);
 
+        Promise.all(aux).then((httpValidationResults) => {
+          const validatedLinkList = linkListArray.map((object, index) => {
+               const clonedObject = { ...object };
+              clonedObject.status = httpValidationResults[index].statCode;
+              clonedObject.ok = httpValidationResults[index].isOk;
+              return clonedObject;
+          });
+          const statResults = getStats(validatedLinkList);
+          
           if (validate && !stats) {
-            httpValidationResults.forEach((data, index) => {
-              linkListArray[index].status = data.statCode;
-              linkListArray[index].ok = data.isOk;
-            });
-            resolve(linkListArray );
-          }
-          else if (stats && !validate) {
+            resolve(validatedLinkList);
+          } else if (stats && !validate) {
             resolve(statResults);
+          } else if (!validate && !stats) {
+            resolve(linkListArray);
           }
-          else {
+          else{
             resolve({ statResults, linkListArray });
           }
-         
         });
       });
     } else if (!isFound) {

@@ -74,19 +74,18 @@ const httpStatusValidator = (url) => {
     })
 }
 
-const statisticsCalculator = (validatedLinksArray) => {
-  let ok = 0;
-  let failed = 0;
+const getStats = (validatedLinksArray) => {
+  
   const totalLinks = validatedLinksArray.length;
+  const unique = new Set(validatedLinksArray.map((object) => object.href)).size;
+  let failed = 0;
 
   for (let i = 0; i < validatedLinksArray.length; i++) {
-    if (validatedLinksArray[i].isOk === "ok") {
-      ok++;
-    } else {
+    if (validatedLinksArray[i].ok !== "ok") {
       failed++;
     }
   }
-  return { totalLinks: totalLinks, okLinks: ok, failedLinks: failed };
+  return { totalLinks: totalLinks, uniqueLinks: unique, failedLinks: failed };
 }
 
 module.exports = {
@@ -96,5 +95,5 @@ module.exports = {
   fileReader,
   mdParser,
   httpStatusValidator,
-  statisticsCalculator
+  getStats
 };
