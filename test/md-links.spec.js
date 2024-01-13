@@ -1,9 +1,10 @@
-const mdLinks = require('../index.js');
+const { mdLinks } = require('../index.js');
 
 describe('mdLinks', () => {
 
+  // jest.spyOn(mdLinks, "mdLinks").mockResolvedValue(fileContent);
+
   it('should return a promise', () => {
-    console.log(mdLinks("docs/03-milestone.md"));
     expect(mdLinks("docs/03-milestone.md")).toBeInstanceOf(Promise);
   });
   it('should reject the promise if the path does not exist', () => {
@@ -17,6 +18,28 @@ describe('mdLinks', () => {
       expect(error.message).toMatch('The input path leads to a non-markdown file! Please provide a valid file.');
     });
   });
+  it("should return an array of objects without validation and stats options", () => {
+    const path = "D:/Proyectos/DEV011-md-links/docs/04-milestone.md";
+    const validate = false;
+    const stats = false;
+
+    return mdLinks(path, validate, stats).then((result) => {
+      expect(result).toHaveLength(5); 
+      expect(result[0]).not.toHaveProperty("ok");
+      expect(result[0]).not.toHaveProperty("status");
+    });
+  });
+  it("should return an array of objects with 'ok' and 'status' with use of validation option", () => {
+    const path = "D:/Proyectos/DEV011-md-links/docs/04-milestone.md";
+    const validate = true;
+    const stats = false;
+
+    return mdLinks(path, validate, stats).then((result) => {
+      expect(result).toHaveLength(5);
+      expect(result[0]).toHaveProperty("ok");
+      expect(result[0]).toHaveProperty("status");
+    });
+  })
 
 });
 
